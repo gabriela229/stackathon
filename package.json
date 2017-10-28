@@ -13,6 +13,7 @@
     "express": "^4.16.2",
     "materialize-css": "^0.100.2",
     "node-google-calendar": "^1.1.0",
+    "papaparse": "^4.3.6",
     "pg": "^7.3.0",
     "sequelize": "^4.19.0"
   }
