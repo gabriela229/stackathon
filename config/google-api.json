@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "gmail-auto-invitation",
+  "private_key_id": "6d5efb8afb826b7978b73fafed01ac6b835caa1b",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCqCOykJmi42neN\nE1anU4Ozt201BIrj4nNs3dtGGunsGCd4IMyZoKL0f+90WU4yEJHMqX5Y+iklU1My\nvnw6DFidRs6mKbMhIOBv0tpswDFuUtfLyq3jkiQPERLIwZLY9F933bIOkwPE74TR\nAfSxKBZlicEitnqgkiWZwgqOReI7pOIDK8tFjUY4mX70B07KO03SDSM8hsGxRe5i\n1fsU3Eo2j3AambmtrM62c070YA8+kAT7CX1GBAlLCq74M8I7LNC1rrILAkcgA+vN\n/Hf6bt+TMqcAf97lSUFJMe9IJpkc6YrjMloflGwWrAIaqZMFThdmA6jstHgjMRsV\nwk5B1ERLAgMBAAECggEAEEQhS0THYOO5axwN/pzdLQyfnGJOXSWVMDV7HBZICYd4\nAyR0HkBBRo2UnTdL5Tszj3YpeZ6Y4BK8E08ouC7lLUqQS1IS6ljoT5pGvf+W2vx+\n22aMwwgAfhZ+iwkFoM6j8WYaeg1zX1wggxQiUe5JUjZe7RCy43iHs1FeTCUAUv83\nlwHlqyBQoOo9A4pSAuoZy5mJd1E9eIHqz9Btuoaa1xDk79tlffyNbdinGaWekPoc\nDHE5ymKsUiMbp+9MuKjjvO/oJSwidOufXaQuz8QfHp2/lXfSrw28Jbi2iuBacRgW\nVCXsastKXU+BT0Pf5xebq3pftIeE+CwMJx+mdqHPaQKBgQDWZTreC0KbPNqHBdo2\nwjK2gdM+W6zVckUuTGdvLt2SN0+JOtZxogoIidk7EAN2p5j9PoBrLrgQdvkLSto7\n4JbbNoZCquxgweo1DSLP8NQqq/pMlDMIcddGaN5m5mT040cA/AnuKzN2L5slbXpd\ncl5kjoVCMebcJeaUiBPINh6QOQKBgQDLB/FuDbk7cJLPmMgSaEV7/PmuniSNlgWT\ncrle12yvuLOkSUfz5Oy5tDlY8rnO5KRNZQ+QUgkzxyswSE+tg5PCGHVCG/HmkcqR\nkICfccAnohNUjgLiNz2qS39GKwuD3hEOJnApcyfPERFJLZhtk8XgFK379NZop69T\n+avtXHHwowKBgAzX55zho83U6WppSVc6bvtL77GuoD3xKH/Lh+67Kf7WXWdlJO+N\nu3gjeeX14Z88DwgstFi3ZcNmvSiWBVjM7XyYWZao0pxBQZyH+uvmC2+6+bWYsy3w\nU+sd4STc7HNXIivG7XldESolU+/8DPaIIWt4tjbu8luB0bxYIoc95rrRAoGAOp0I\nbiU4HJjbSWNqHyZLKQhXbLnrA5UT9wVfzqmSjwhblEozo42radFF3Q/15GzNoipS\n2+9TCMevCDlYB1e9CIPXFkbLBy1/tZZqC53jQ43e1sJIwtX/z3IMRE2Y/XDWq6cd\nKlo8W+Mpgl7PapMGxTIzKFH+tCf0zeF+aQAPRNECgYBOsA4Uvy9mKc5uylQlkhV2\nO+WyOQrsfDWfVNm3lD5w0JOVzXgrsm2uBskC1Ye8Tn1lmd9sabwzBZWo+d5YQBhQ\n5O+dtvGuSHA8nNgsWszMm4ixDYqy7YvMRLQ10vTQNwfpiQVw8OdOmlnIs6wxoaEx\nVN5hwvk+cObFo+3fmYqCzA==\n-----END PRIVATE KEY-----\n",
+  "client_email": "invite@gmail-auto-invitation.iam.gserviceaccount.com",
+  "client_id": "111206633574550441112",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://accounts.google.com/o/oauth2/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/invite%40gmail-auto-invitation.iam.gserviceaccount.com"
+}
