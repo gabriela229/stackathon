@@ -1,1 +1,3 @@
-##Stackathon
+## Stackathon
+
+npm install
