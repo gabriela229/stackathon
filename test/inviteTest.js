@@ -16,7 +16,7 @@ module.exports = `Order,Lecture,Workshop,link to WS,Aprox Time (Hrs),Points,Fell
 64,Lecture: Box Diagramming Techniques,Box Diagramming Techniques,,1,1,Elle,Gaby,Gabriela
 67,Lecture: Flexbox / CSS Layout Systems,Landing Page LaunchPad,,3,3,Gabriela,Elle,Gaby
 70,"Lecture: CSS Transitions, Transforms, and Animations",Landing Page Liftoff,,3,3,Gabriela,Gaby,Elle
-73,Lecture: Webpack,Trip Planner -Modular Frontend,,3,4,Elle,Gaby,Gabriela
+73,Lecture: Webpack,Trip Planner - Modular Frontend,,3,4,Elle,Gaby,Gabriela
 76,Lecture: Single Page Applications,Trip Planner - SPA,,5,5,Gabriela,Elle,Gaby
 79,Lecture: Frontend Routing,Trip Planner - Frontend Routing,,3.5,5,Gabriela,Gaby,Elle
 81,Lecture: Event Emitters and Socket.io,World Wide Whiteboard,link,2.5,1,Elle,Gaby,Gabriela
