@@ -14,6 +14,14 @@ router.get('/', (req, res, next) => {
     .catch(next);
 });
 
+router.put('/:id', (req, res, next) => {
+  console.log('here?');
+  console.log(req.body, 'req.body');
+  const {workshopFile, emailFile, startDate, endDate} = req.body;
+  return onSubmitUserData(workshopFile, emailFile, startDate, endDate)
+  .then(() => res.sendStatus(204))
+  .catch(next);
+});
 
 module.exports = router;
 
@@ -26,113 +34,115 @@ module.exports = router;
 // const calendarId = CONFIG.calendarId.primary;
 // // const testFile = require('../../test/inviteTest');
 // // const testEmails = require('../../test/emailList');
-// const Papa = require('papaparse');
+const Papa = require('papaparse');
 
 
-// const getAttendees = (emails, team) => {
-//    return emails.data.map( email => {
-//       if (team.includes(email.Name)) {
-//         return {email: email.Email, displayName: email.Name};
-//       }
-//   });
-// };
+const getAttendees = (emails, team) => {
+   return emails.data.map( email => {
+      if (team.includes(email.Name)) {
+        return {email: email.Email, displayName: email.Name};
+      }
+  });
+};
 
-// function sendInvites(start, end, data){
-//   const timeMin = start.toISOString();
-//   const timeMax = end.toISOString();
-//   let attendees = getAttendees(data.emails, [data.Instructor, data.fellowPoll]);
-//   // console.log(attendees)
-//   getEventAndUpdate(timeMin, timeMax, data.Lecture, attendees)
-//     .then( () => {
-//       Promise.all([
-//         getEventAndUpdate(timeMin, timeMax, data.Review, attendees),
-//         getEventAndUpdate(timeMin, timeMax, data.ReviewVideo, attendees),
-//         getEventAndUpdate(timeMin, timeMax, data.ReviewQA, attendees),
-//         getEventAndUpdate(timeMin, timeMax, data.Presentations, attendees)
-//       ]);
-//     })
-//     .then( () => {
-//       attendees = getAttendees(data.emails, [data.Instructor, ...data.fellowWS]);
-//       getEventAndUpdate(timeMin, timeMax, data.Workshop, attendees);
-//     })
-//     .catch( err => console.log(err));
-// }
+function sendInvites(start, end, data){
+  const timeMin = start.toISOString();
+  const timeMax = end.toISOString();
+  let attendees = getAttendees(data.emails, [data.Instructor, data.fellowPoll]);
+  console.log(attendees, 'attendess');
+  getEventAndUpdate(timeMin, timeMax, data.Lecture, attendees)
+    .then( () => {
+      Promise.all([
+        getEventAndUpdate(timeMin, timeMax, data.Review, attendees),
+        getEventAndUpdate(timeMin, timeMax, data.ReviewVideo, attendees),
+        getEventAndUpdate(timeMin, timeMax, data.ReviewQA, attendees),
+        getEventAndUpdate(timeMin, timeMax, data.Presentations, attendees)
+      ]);
+    })
+    .then( () => {
+      attendees = getAttendees(data.emails, [data.Instructor, ...data.fellowWS]);
+      return getEventAndUpdate(timeMin, timeMax, data.Workshop, attendees);
+    })
+    .catch( err => console.log(err));
+}
 
-// function getEventAndUpdate(timeMin, timeMax, q, attendees){
-//   let params = {
-//     timeMin,
-//     timeMax,
-//     q
-//   };
+function getEventAndUpdate(timeMin, timeMax, q, attendees){
+  let params = {
+    timeMin,
+    timeMax,
+    q
+  };
 
-//   return cal.Events.list(calendarId, params)
-//     .then(json => {
-//       json.map( event => {
-//         updateEvent(calendarId, event.id, event, attendees);
-//       });
-//     })
-//     .catch(err => {
-//       console.log('Error: listSingleEvents -' + err);
-//   });
-// }
+  return cal.Events.list(calendarId, params)
+    .then(json => {
+      json.map( event => {
+        updateEvent(calendarId, event.id, event, attendees);
+      });
+    })
+    .catch(err => {
+      console.log('Error: listSingleEvents -' + err);
+  });
+}
 
-// function updateEvent(calId, eventId, event, attendees) {
-//   const evntParams = {
-//     sendNotifications: false
-//   };
-//   event.attendees = attendees;
-//   // console.log(event);
-// 	cal.Events.update(calId, eventId, event, evntParams)
-// 		.then(resp => {
-//       console.log(resp);
-// 			console.log('updated event');
-// 			return resp;
-// 		})
-// 		.catch(err => {
-// 			console.log('Error: updatedEvent-' + err);
-// 		});
-// }
+function updateEvent(calId, eventId, event, attendees) {
+  const evntParams = {
+    sendNotifications: false
+  };
+  event.attendees = attendees;
+  // console.log(event);
+	cal.Events.update(calId, eventId, event, evntParams)
+		.then(resp => {
+      console.log(resp, 'resp');
+			console.log('updated event');
+			return resp;
+		})
+		.catch(err => {
+			console.log('Error: updatedEvent-' + err);
+		});
+}
 
-// Papa.parsePromise = function(file, config) {
-//   return new Promise(function(complete, error) {
-//     const options = Object.assign({}, config, {complete, error})
-//     Papa.parse(file, options);
-//   });
-// };
+Papa.parsePromise = function(file, config) {
+  return new Promise(function(complete, error) {
+    const options = Object.assign({}, config, {complete, error});
+    Papa.parse(file, options);
+  });
+};
 
-// function onSubmitUserData(attendeeFile, emailFile, start, end){
-//   Promise.all([
-//     Papa.parsePromise(emailFile, {header: true}),
-//     Papa.parsePromise(attendeeFile, {header: true})
-//   ])
-//     .then(([emails, attendees]) => {
-//       attendees.data.map( ws => {
-//         let { Lecture, Workshop, 'Fellow (Does Poll)': fellowPoll, Instructor } = ws;
-//         let fellows = [];
-//         const keys = Object.keys(ws);
-//         keys.map( key => {
-//           if (key.toLowerCase().includes('fellow')){
-//             fellows.push(ws[key]);
-//           }
-//         });
-//         let data  = {
-//           Lecture,
-//           Workshop: `Workshop: ${Workshop}`,
-//           Review: `Review: ${Workshop}`,
-//           ReviewVideo: `Review Video: ${Workshop}`,
-//           ReviewQA: `Review Q&A: ${Workshop}`,
-//           Presentations: `Presentations: ${Workshop}`,
-//           fellowPoll,
-//           fellowWS: fellows,
-//           Instructor,
-//           emails
-//         };
-
-//         sendInvites(start, end, data);
-//       });
-//     })
-//     .catch(err => console.log(err));
-// }
+function onSubmitUserData(attendeeFile, emailFile, start, end){
+  console.log('here in onsubmituserdata?');
+  return Promise.all([
+    Papa.parsePromise(emailFile, {header: true}),
+    Papa.parsePromise(attendeeFile, {header: true})
+  ])
+    .then(([emails, attendees]) => {
+      console.log('after papa parse?', emails, attendees);
+      return attendees.data.map( ws => {
+        let { Lecture, Workshop, 'Fellow (Does Poll)': fellowPoll, Instructor } = ws;
+        let fellows = [];
+        const keys = Object.keys(ws);
+        keys.map( key => {
+          if (key.toLowerCase().includes('fellow')){
+            fellows.push(ws[key]);
+          }
+        });
+        let data  = {
+          Lecture,
+          Workshop: `Workshop: ${Workshop}`,
+          Review: `Review: ${Workshop}`,
+          ReviewVideo: `Review Video: ${Workshop}`,
+          ReviewQA: `Review Q&A: ${Workshop}`,
+          Presentations: `Presentations: ${Workshop}`,
+          fellowPoll,
+          fellowWS: fellows,
+          Instructor,
+          emails
+        };
+        console.log(start, end, data, "start, end, data");
+        sendInvites(start, end, data);
+      });
+    })
+    .catch(err => console.log(err));
+}
 
 // const startDate = new Date(2017, 10, 20, 0, 0);
 // // console.log(startDate);
