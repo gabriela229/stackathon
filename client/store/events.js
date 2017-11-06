@@ -9,11 +9,6 @@ export function updateEvents(events){
 }
 
 export function modifyEvents(workshopFile, emailFile, calendarId, startDate, endDate){
-  // const data = new FormData();
-  // data.append('workshopFile', workshopFile);
-  // data.append('emailFile', emailFile);
-  // data.append('startDate', startDate);
-  // data.append('endDate', endDate);
     return (dispatch) => {
       return Promise.all([
         Papa.parsePromise(workshopFile, {header: true, beforeFirstChunk: (chunk) => {
