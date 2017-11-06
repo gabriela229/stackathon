@@ -1,5 +1,9 @@
 const express = require('express');
 const cal = require('./google-calendar');
+const path = require('path');
+const multer  = require('multer');
+const upload = multer({ dest: path.join(__dirname, '../public/uploads') });
+const fs = require('fs');
 
 const router = express.Router();
 
@@ -8,34 +12,19 @@ router.get('/', (req, res, next) => {
     showHidden: true
   })
   .then(calendars => {
-    console.log(calendars);
       res.send(calendars);
     })
     .catch(next);
 });
 
 router.put('/:id', (req, res, next) => {
-  console.log('here?');
-  console.log(req.body, 'req.body');
-  const {workshopFile, emailFile, startDate, endDate} = req.body;
-  return onSubmitUserData(workshopFile, emailFile, startDate, endDate)
+  const {workshopFileJSON, emailFileJSON, startDate, endDate} = req.body;
+  onSubmitUserData(req.params.id, workshopFileJSON, emailFileJSON, startDate, endDate)
   .then(() => res.sendStatus(204))
   .catch(next);
 });
 
 module.exports = router;
-
-
-
-
-
-
-
-// const calendarId = CONFIG.calendarId.primary;
-// // const testFile = require('../../test/inviteTest');
-// // const testEmails = require('../../test/emailList');
-const Papa = require('papaparse');
-
 
 const getAttendees = (emails, team) => {
    return emails.data.map( email => {
@@ -46,37 +35,37 @@ const getAttendees = (emails, team) => {
 };
 
 function sendInvites(start, end, data){
-  const timeMin = start.toISOString();
-  const timeMax = end.toISOString();
+  const startTime = new Date(start);
+  const endTime = new Date(end);
+  const timeMin = startTime.toISOString();
+  const timeMax = endTime.toISOString();
   let attendees = getAttendees(data.emails, [data.Instructor, data.fellowPoll]);
-  console.log(attendees, 'attendess');
-  getEventAndUpdate(timeMin, timeMax, data.Lecture, attendees)
+  getEventAndUpdate(data.id, timeMin, timeMax, data.Lecture, attendees)
     .then( () => {
       Promise.all([
-        getEventAndUpdate(timeMin, timeMax, data.Review, attendees),
-        getEventAndUpdate(timeMin, timeMax, data.ReviewVideo, attendees),
-        getEventAndUpdate(timeMin, timeMax, data.ReviewQA, attendees),
-        getEventAndUpdate(timeMin, timeMax, data.Presentations, attendees)
+        getEventAndUpdate(data.id, timeMin, timeMax, data.Review, attendees),
+        getEventAndUpdate(data.id, timeMin, timeMax, data.ReviewQA, attendees),
+        getEventAndUpdate(data.id, timeMin, timeMax, data.ReviewVideo, [data.Instructor]),
+        getEventAndUpdate(data.id, timeMin, timeMax, data.Presentations, [data.Instructor])
       ]);
     })
     .then( () => {
       attendees = getAttendees(data.emails, [data.Instructor, ...data.fellowWS]);
-      return getEventAndUpdate(timeMin, timeMax, data.Workshop, attendees);
+      return getEventAndUpdate(data.id, timeMin, timeMax, data.Workshop, attendees);
     })
     .catch( err => console.log(err));
 }
 
-function getEventAndUpdate(timeMin, timeMax, q, attendees){
+function getEventAndUpdate(id, timeMin, timeMax, q, attendees){
   let params = {
     timeMin,
     timeMax,
     q
   };
-
-  return cal.Events.list(calendarId, params)
+  return cal.Events.list(id, params)
     .then(json => {
       json.map( event => {
-        updateEvent(calendarId, event.id, event, attendees);
+        updateEvent(id, event.id, event, attendees);
       });
     })
     .catch(err => {
@@ -89,10 +78,8 @@ function updateEvent(calId, eventId, event, attendees) {
     sendNotifications: false
   };
   event.attendees = attendees;
-  // console.log(event);
 	cal.Events.update(calId, eventId, event, evntParams)
 		.then(resp => {
-      console.log(resp, 'resp');
 			console.log('updated event');
 			return resp;
 		})
@@ -101,22 +88,9 @@ function updateEvent(calId, eventId, event, attendees) {
 		});
 }
 
-Papa.parsePromise = function(file, config) {
-  return new Promise(function(complete, error) {
-    const options = Object.assign({}, config, {complete, error});
-    Papa.parse(file, options);
-  });
-};
 
-function onSubmitUserData(attendeeFile, emailFile, start, end){
-  console.log('here in onsubmituserdata?');
-  return Promise.all([
-    Papa.parsePromise(emailFile, {header: true}),
-    Papa.parsePromise(attendeeFile, {header: true})
-  ])
-    .then(([emails, attendees]) => {
-      console.log('after papa parse?', emails, attendees);
-      return attendees.data.map( ws => {
+function onSubmitUserData(id, attendees, emails, start, end){
+      return Promise.all(attendees.data.map( ws => {
         let { Lecture, Workshop, 'Fellow (Does Poll)': fellowPoll, Instructor } = ws;
         let fellows = [];
         const keys = Object.keys(ws);
@@ -126,6 +100,7 @@ function onSubmitUserData(attendeeFile, emailFile, start, end){
           }
         });
         let data  = {
+          id,
           Lecture,
           Workshop: `Workshop: ${Workshop}`,
           Review: `Review: ${Workshop}`,
@@ -137,20 +112,10 @@ function onSubmitUserData(attendeeFile, emailFile, start, end){
           Instructor,
           emails
         };
-        console.log(start, end, data, "start, end, data");
-        sendInvites(start, end, data);
-      });
-    })
+        return new Promise( (resolve, reject) => {
+          resolve(sendInvites(start, end, data));
+        }
+      );
+    }))
     .catch(err => console.log(err));
 }
-
-// const startDate = new Date(2017, 10, 20, 0, 0);
-// // console.log(startDate);
-// const endDate = new Date(2017, 10, 23, 0, 0);
-// // console.log(endDate)
-
-// // onSubmitUserData(testFile, testEmails, startDate, endDate);
-
-// // const addResource = (lectureLocation, workshopLocation) => {
-
-// // }
