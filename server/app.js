@@ -3,6 +3,8 @@ const app = express();
 const path = require('path');
 const bodyParser = require('body-parser');
 
+if (process.env.NODE_ENV !== 'production') require('../secrets');
+
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 app.use('/dist', express.static(path.join(__dirname, '..', 'dist')));

@@ -109,7 +109,8 @@ function onSubmitUserData(id, attendees, emails, start, end){
           emails
         };
         return new Promise( (resolve, reject) => {
-          resolve(sendInvites(start, end, data));
+          console.log(start, end, data);
+          // resolve(sendInvites(start, end, data));
         }
       );
     }))
