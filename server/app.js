@@ -4,6 +4,10 @@ const path = require('path');
 const bodyParser = require('body-parser');
 
 if (process.env.NODE_ENV !== 'production') require('../secrets');
+if (process.env.NODE_ENV === 'production'){
+  process.env.key = JSON.parse(process.env.key);
+}
+
 
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
