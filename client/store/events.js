@@ -19,7 +19,6 @@ export function modifyEvents(workshopFile, emailFile, calendarId, startDate, end
         Papa.parsePromise(emailFile, {header: true})
       ])
       .then(([workshopFileJSON, emailFileJSON]) => {
-        console.log(workshopFileJSON, emailFileJSON);
         const data = {workshopFileJSON, emailFileJSON, startDate, endDate};
       return axios.put(`/api/google/${calendarId}`, data)
     // .then(res => res.data)

@@ -18,7 +18,6 @@ export class Home extends Component{
     const change = {};
     change[event.target.name] = event.target.value;
     this.setState(change);
-    console.log(this.state);
   }
   onSubmit(event){
     event.preventDefault();
