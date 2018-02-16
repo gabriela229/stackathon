@@ -8,7 +8,8 @@ export function updateEvents(events){
   return {type: UPDATE_EVENTS, events};
 }
 
-export function modifyEvents(workshopFile, emailFile, calendarId, startDate, endDate){
+export function modifyEvents(workshopFile, emailFile, state){
+  const {calendarId, startDate, endDate, lectureRoomId, workshopRoomId, hotSeat, retro} = state;
     return (dispatch) => {
       return Promise.all([
         Papa.parsePromise(workshopFile, {header: true, beforeFirstChunk: (chunk) => {
@@ -19,8 +20,8 @@ export function modifyEvents(workshopFile, emailFile, calendarId, startDate, end
         Papa.parsePromise(emailFile, {header: true})
       ])
       .then(([workshopFileJSON, emailFileJSON]) => {
-        const data = {workshopFileJSON, emailFileJSON, startDate, endDate};
-      return axios.put(`/api/google/${calendarId}`, data)
+        const data = {workshopFileJSON, emailFileJSON, startDate, endDate, lectureRoomId, workshopRoomId, hotSeat, retro};
+      return axios.put(`/api/google/${calendarId}`, data);
     // .then(res => res.data)
     // .then( events => {
     //   dispatch(updateEvents(events));
