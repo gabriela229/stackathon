@@ -34,6 +34,7 @@ function sendInvites(start, end, data){
        getEventAndUpdate(id, timeMin, timeMax, reviewQA, [...instructorFellowPollEmail, {email: lectureRoomId}])
    ])
    .then( () => {
+     console.log('sendInvites 1st .then', workshop);
      const instructorEmail = getAttendees(emails, [instructor]);
      return Promise.all([
        getEventAndUpdate(id, timeMin, timeMax, reviewVideo, [...instructorEmail, {email: workshopRoomId}]),
@@ -41,6 +42,7 @@ function sendInvites(start, end, data){
      ]);
    })
    .then( () => {
+    console.log('sendInvites 2nd .then', workshop);
      const instructorFellowsEmail = getAttendees(emails, [instructor, ...fellowWS]);
       return getEventAndUpdate(id, timeMin, timeMax, workshop, [...instructorFellowsEmail, {email: workshopRoomId}]);
    })
@@ -55,8 +57,8 @@ function getEventAndUpdate(id, timeMin, timeMax, q, attendees){
  };
  return cal.Events.list(id, params)
    .then(json => {
-     json.map( event => {
-       updateEvent(id, event.id, event, attendees);
+     return json.map( event => {
+        updateEvent(id, event.id, event, attendees);
      });
    })
    .catch(err => {
@@ -93,7 +95,7 @@ function updateEvent(calId, eventId, event, attendees) {
    sendNotifications: false
  };
  event.attendees = attendees;
- cal.Events.update(calId, eventId, event, evntParams)
+ return cal.Events.update(calId, eventId, event, evntParams)
    .then(resp => {
      console.log('updated event');
     //  console.log(resp.attendees);
@@ -135,19 +137,18 @@ function onSubmitUserData(id, body){
          lectureRoomId,
          workshopRoomId
        };
-       return new Promise( (resolve, reject) => {
-         console.log('sending invite', data.lectue, data.workshop);
-         resolve(sendInvites(startDate, endDate, data));
-       }
-     );
+       return sendInvites(startDate, endDate, data);
    }))
    .then( () => {
+     console.log('All events sent!??');
      if (hotSeat){
-       sendHotSeatRetroInvites(startDate, endDate, id, emailFileJSON, instructors, lectureRoomId, '"Hot Seat');
+       return sendHotSeatRetroInvites(startDate, endDate, id, emailFileJSON, instructors, lectureRoomId, '"Hot Seat');
      }
-     if (retro){
-      sendHotSeatRetroInvites(startDate, endDate, id, emailFileJSON, instructors, lectureRoomId, '"Retrospective');
-    }
+   })
+   .then( () => {
+      if (retro){
+        return sendHotSeatRetroInvites(startDate, endDate, id, emailFileJSON, instructors, lectureRoomId, '"Retrospective');
+      }
    })
    .then(() => {
     const {timeMin, timeMax} = convertTime(startDate, endDate);
